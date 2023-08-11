@@ -11,8 +11,5 @@
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.6.2"
-  },
-  "dependencies": {
-    "decimal.js": "^10.4.3"
   }
 }

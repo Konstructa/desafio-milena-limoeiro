@@ -1,4 +1,3 @@
-import Decimal from 'decimal.js';
 
 class CaixaDaLanchonete {
 
@@ -47,13 +46,14 @@ class CaixaDaLanchonete {
                 return 'Item extra não pode ser pedido sem o principal';
             }
 
-            valorTotal += +quantidade * this.cardapio.find(item => item.codigo === codigo).valor;
+            valorTotal += (+quantidade * this.cardapio.find(item => item.codigo === codigo).valor);
 
         };
 
-        return (valorTotal * this.pagamento[metodoDePagamento]).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
+        const resultado = (valorTotal * this.pagamento[metodoDePagamento]).toFixed(2)
 
+        return parseFloat(resultado).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
 
 }
 
