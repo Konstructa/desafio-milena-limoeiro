@@ -1,58 +1,41 @@
+import cardapio from './entidades/Cardapio.js';
+import { Pedido } from './entidades/Pedido.js';
+import { FabricaMetodosPagamento } from './pagamento/FabricaMetodosPagamento.js'
 
 class CaixaDaLanchonete {
-
-    pagamento = {
-        dinheiro: 0.95,
-        credito: 1.03,
-        debito: 1.00
-    }
-
-    cardapio = [
-        { codigo: 'cafe', descricao: 'Café', valor: 3.00 },
-        { codigo: 'chantily', descricao: 'Chantily (extra do Café)', valor: 1.50 },
-        { codigo: 'suco', descricao: 'Suco Natural', valor: 6.20 },
-        { codigo: 'sanduiche', descricao: 'Sanduíche', valor: 6.50 },
-        { codigo: 'queijo', descricao: 'Queijo (extra do Sanduíche)', valor: 2.00 },
-        { codigo: 'salgado', descricao: 'Salgado', valor: 7.25 },
-        { codigo: 'combo1', descricao: '1 Suco e 1 Sanduíche', valor: 9.50 },
-        { codigo: 'combo2', descricao: '1 Café e 1 Sanduíche', valor: 7.50 },
-    ]
-
     calcularValorDaCompra(metodoDePagamento, itens) {
-        let valorTotal = 0.00;
+        this.criarCardapio();
 
-        if ( !this.pagamento[metodoDePagamento] ) return 'Forma de pagamento inválida!';
+        const fabrica = new FabricaMetodosPagamento();
+        const pagamento = fabrica.criarMetodoPagamento(metodoDePagamento);
+
+        const pedido = new Pedido();
+        const avaliarPedido = pedido.validarPedido(itens);
         
-        if ( itens.length == 0 ) return 'Não há itens no carrinho de compra!';
+        if (avaliarPedido !== 'Aprovado!') {
+            return avaliarPedido;
+        }
 
-        const carrinho = itens.map(item => {
-            if ( item.split(",").length < 2 ) return 'Item inválido!';
-            const [produto, quantidade] = item.split(',');
-            return [produto, parseInt(quantidade)];
-        });
+        if (pagamento === 'Forma de pagamento inválida!') { 
+            return pagamento;
+        }
 
-        for (const item of carrinho) {
-            const [codigo, quantidade] = item;
+        const valorTotal = pedido.totalPedido();
 
-          
-            if ( !this.cardapio.find(item => item.codigo === codigo) ) return 'Item inválido!';
-            if ( quantidade == 0 || isNaN(quantidade) ) return 'Quantidade inválida!';
-
-            if (codigo === 'queijo' && !carrinho.some(subarray => subarray.includes('sanduiche'))) {
-                return 'Item extra não pode ser pedido sem o principal';
-            }
-
-            if (codigo === 'chantily' && !carrinho.some(subarray => subarray.includes('cafe'))) {
-                return 'Item extra não pode ser pedido sem o principal';
-            }
-
-            valorTotal += (+quantidade * this.cardapio.find(item => item.codigo === codigo).valor);
-
-        };
-
-        const resultado = (valorTotal * this.pagamento[metodoDePagamento]).toFixed(2)
+        const resultado = pagamento.calcularValorFinal(valorTotal);
 
         return parseFloat(resultado).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    criarCardapio() { 
+        cardapio.adicionarItem('cafe', 'Café', 3.00);
+        cardapio.adicionarItemExtra('chantily', 'Chantily (extra do Café)', 1.50, 'cafe');
+        cardapio.adicionarItem('suco', 'Suco Natural', 6.20);
+        cardapio.adicionarItem('sanduiche', 'Sanduíche', 6.50);
+        cardapio.adicionarItemExtra('queijo', 'Queijo (extra do Sanduíche)', 2.00, 'sanduiche');
+        cardapio.adicionarItem('salgado', 'Salgado', 7.25);
+        cardapio.adicionarItem('combo1', '1 Suco e 1 Sanduíche', 9.50);
+        cardapio.adicionarItem('combo2', '1 Café e 1 Sanduíche', 7.50);
     }
 
 }
