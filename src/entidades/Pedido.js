@@ -46,11 +46,6 @@ class Pedido {
     getTotalPedido() { 
         return this.carrinho.reduce((acc, [item, quantidade]) => acc + (item.valor * quantidade), 0.00);
     }
-
-    validarItemExtra(itemExtra, pedidoFormatado) { 
-        return pedidoFormatado.some(item => item.includes(itemExtra.itemPrincipal));
-    }
-
 }
 
 export { Pedido } ;
