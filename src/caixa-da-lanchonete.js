@@ -20,11 +20,11 @@ class CaixaDaLanchonete {
             return pagamento;
         }
 
-        const valorTotal = pedido.totalPedido();
+        const valorTotal = pedido.getTotalPedido();
 
-        const resultado = pagamento.calcularValorFinal(valorTotal);
+        const valorCompra = pagamento.calcularValorFinal(valorTotal);
 
-        return parseFloat(resultado).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        return parseFloat(valorCompra).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
     criarCardapio() { 

@@ -43,7 +43,7 @@ class Pedido {
         return 'Aprovado!';
     }
 
-    totalPedido() { 
+    getTotalPedido() { 
         return this.carrinho.reduce((acc, [item, quantidade]) => acc + (item.valor * quantidade), 0.00);
     }
 
